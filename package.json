@@ -1,0 +1,24 @@
+{
+  "name": "text-adventure",
+  "version": "1.0.0",
+  "description": "A retro text adventure engine.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylersaunders/text-adventure.git"
+  },
+  "keywords": [
+    "text",
+    "adventure",
+    "game"
+  ],
+  "author": "Tyler Saunders",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tylersaunders/text-adventure/issues"
+  },
+  "homepage": "https://github.com/tylersaunders/text-adventure#readme"
+}
