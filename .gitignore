@@ -1,2 +1,11 @@
 # Dependency directories
 node_modules/
+
+# Build Directory
+dist/
+
+# tern
+.tern-project
+
+.eslintrc.js
+package-lock.json
