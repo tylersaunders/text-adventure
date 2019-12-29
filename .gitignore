@@ -1,8 +1,10 @@
 # Dependency directories
 node_modules/
+server/env/
+server/__pycache__
 
 # Build Directory
-dist/
+build/
 
 # tern
 .tern-project

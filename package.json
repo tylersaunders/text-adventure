@@ -5,17 +5,13 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config config/webpack.config.js"
+    "build": "webpack --config config/webpack.config.js && cp web/index.html build/index.html"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tylersaunders/text-adventure.git"
   },
-  "keywords": [
-    "text",
-    "adventure",
-    "game"
-  ],
+  "keywords": ["text", "adventure", "game"],
   "author": "Tyler Saunders",
   "license": "MIT",
   "bugs": {
