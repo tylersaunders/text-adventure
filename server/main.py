@@ -5,7 +5,7 @@ from flask import Flask, request, render_template
 import logging
 
 def create_app():
-    app = Flask(__name__, static_url_path='', static_folder='../build', template_folder='../build/')
+    app = Flask(__name__, static_url_path='',  template_folder='../build/')
 
     @app.route('/')
     def index(**_):
