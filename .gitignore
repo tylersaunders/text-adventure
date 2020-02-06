@@ -9,5 +9,3 @@ build/
 # tern
 .tern-project
 
-.eslintrc.js
-package-lock.json
