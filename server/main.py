@@ -1,8 +1,9 @@
 # python3
-import os
 
-from flask import Flask, request, render_template
-import logging
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+
+socketio = SocketIO()
 
 
 def create_app():
@@ -15,9 +16,16 @@ def create_app():
     def index(**_):
         return render_template('index.html')
 
+    socketio.init_app(app)
+
+    @socketio.on('connect')
+    def connect():
+        """When a client connects, this should start the adventure."""
+        pass
+
+    @socketio.on('action')
+    def message(message):
+        """When receiving action text from the user."""
+        emit('adventure-text', 'one dark night')
+
     return app
-
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
