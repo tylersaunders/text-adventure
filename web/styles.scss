@@ -21,11 +21,13 @@ body {
     background-color: lightgray;
 }
 
-#display-wrapper {
+#adventure-text {
     height: 250px;
-    border-bottom: 4px solid #2B2D2F;
+    border-bottom: 4px solid #3eb489;
 
-    padding: 0px 40px;
+    padding: 8px 40px;
+
+    overflow-y: auto;
 }
 
 #terminal-wrapper {
@@ -34,6 +36,10 @@ body {
 
     height: 140px;
     padding: 8px 40px;
+}
+
+#action-text {
+    text-align: center;
 }
 
 #terminal {
