@@ -7,8 +7,8 @@ socket.on('connect', () => {
 });
 
 const terminal = document.getElementById('terminal') as HTMLInputElement;
-terminal?.focus();
-terminal?.addEventListener('keyup', (e) => {
+terminal.focus();
+terminal.addEventListener('keyup', (e) => {
   if (e.keyCode === 13) {
     socket.emit('action', terminal.value);
     terminal.value = '';

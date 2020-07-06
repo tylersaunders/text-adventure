@@ -1,17 +1,18 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
+        "baseUrl": ".",
+        "forceConsistentCasingInFileNames": true,
+        "incremental": true,
+        "lib": [
+            "esnext",
+            "dom"
+        ],
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "removeComments": true,
         "sourceMap": true,
         "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "lib": [
-            "es2016",
-            "dom"
-        ]
+        "target": "esnext"
     }
 }
