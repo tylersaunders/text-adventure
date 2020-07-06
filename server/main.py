@@ -30,7 +30,7 @@ def create_app():
         emit('adventure-text', greeting)
         pass
 
-    @socketio.on('action')
+    @socketio.on('user-action')
     def message(message):
         """When receiving action text from the user."""
         emit('adventure-text', 'one dark night')
