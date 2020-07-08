@@ -9,3 +9,6 @@ build/
 # tern
 .tern-project
 
+# Karma Coverage
+coverage/
+

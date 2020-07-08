@@ -1,49 +1,53 @@
 {
-  "name": "text-adventure",
-  "version": "1.0.0",
-  "description": "A retro text adventure engine.",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config config/webpack.config.js && cp web/index.html build/index.html"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tylersaunders/text-adventure.git"
-  },
-  "keywords": [
-    "text",
-    "adventure",
-    "game"
-  ],
-  "author": "Tyler Saunders",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/tylersaunders/text-adventure/issues"
-  },
-  "homepage": "https://github.com/tylersaunders/text-adventure#readme",
-  "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
-    "@types/socket.io": "^2.1.8",
-    "@types/socket.io-client": "^1.4.33",
-    "autoprefixer": "^9.7.3",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.4.0",
-    "cssnano": "^4.1.10",
-    "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
-    "mini-css-extract-plugin": "^0.9.0",
-    "postcss-loader": "^3.0.0",
-    "sass": "^1.24.0",
-    "sass-loader": "^8.0.0",
-    "ts-loader": "^7.0.5",
-    "typescript": "^3.9.6",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
-  },
-  "dependencies": {
-    "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
-  }
+    "name": "text-adventure",
+    "version": "1.0.0",
+    "description": "A retro text adventure engine.",
+    "main": "main.js",
+    "scripts": {
+        "test": "karma start",
+        "build": "webpack --config config/webpack.config.js && cp web/index.html build/index.html"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tylersaunders/text-adventure.git"
+    },
+    "keywords": [
+        "text",
+        "adventure",
+        "game"
+    ],
+    "author": "Tyler Saunders",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/tylersaunders/text-adventure/issues"
+    },
+    "homepage": "https://github.com/tylersaunders/text-adventure#readme",
+    "devDependencies": {
+        "@babel/core": "^7.7.7",
+        "@babel/preset-env": "^7.7.7",
+        "@types/jasmine": "^3.5.11",
+        "@types/socket.io-client": "^1.4.33",
+        "autoprefixer": "^9.7.3",
+        "babel-loader": "^8.0.6",
+        "css-loader": "^3.4.0",
+        "cssnano": "^4.1.10",
+        "eslint": "^6.8.0",
+        "eslint-config-google": "^0.14.0",
+        "jasmine": "^3.5.0",
+        "karma": "^5.1.0",
+        "karma-chrome-launcher": "^3.1.0",
+        "karma-jasmine": "^3.3.1",
+        "karma-typescript": "^5.0.3",
+        "mini-css-extract-plugin": "^0.9.0",
+        "postcss-loader": "^3.0.0",
+        "sass": "^1.24.0",
+        "sass-loader": "^8.0.0",
+        "ts-loader": "^7.0.5",
+        "typescript": "^3.9.6",
+        "webpack": "^4.41.5",
+        "webpack-cli": "^3.3.10"
+    },
+    "dependencies": {
+        "socket.io-client": "^2.3.0"
+    }
 }
