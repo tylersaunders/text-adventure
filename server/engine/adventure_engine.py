@@ -1,6 +1,6 @@
 from server.engine.scenario import Scenario
 from flask_socketio import SocketIO, emit
-from server.engine.actions import parse_user_input, Actions
+from server.engine.actions import parse, Actions
 from server.enums import Sockets
 
 
@@ -15,7 +15,8 @@ class AdventureEngine():
         """
         self.socket = socketio
         self.scenario = scenario
-        emit('adventure-text', self.scenario.greeting)
+        emit(Sockets.ADVENTURE_TEXT.value, self.scenario.greeting)
+        emit(Sockets.ACTION_TEXT.value, None)
 
         @self.socket.on(Sockets.PLAYER_ACTIONS.value)
         def handle_user_action(action):
@@ -44,12 +45,22 @@ class AdventureEngine():
         Args:
             action: the unparsed player's action from the websocket.
         """
-        action, target = parse_user_input(action,
-                                          self.scenario.player_location)
+        action, target, args = parse(action, self.scenario)
 
         if action == Actions.UNKNOWN:
             emit(Sockets.ACTION_TEXT.value,
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return
 
-        emit(Sockets.ACTION_TEXT.value, f'Your action was {action.value}')
+        try:
+            print(action, target, args)
+            adventure_text, action_text = getattr(target, action.value)(*args)
+        except AttributeError:
+            emit(Sockets.ACTION_TEXT.value,
+                 self.scenario.UNKNOWN_ACTION_RESPONSE)
+            return
+
+        if adventure_text:
+            emit(Sockets.ADVENTURE_TEXT.value, adventure_text)
+        if action_text:
+            emit(Sockets.ACTION_TEXT.value, action_text)

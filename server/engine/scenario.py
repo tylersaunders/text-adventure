@@ -16,3 +16,10 @@ class Scenario():
     def add_location(self, loc: Location) -> None:
         self.locations.append(loc)
         pass
+
+    def move(self, direction: str):
+        if direction in self.player_location.exits:
+            self.player_location = self.player_location.exits[direction]
+            return (self.player_location.look(), f'You travel {direction}.')
+        else:
+            return (None, 'You cannot go that way.')
