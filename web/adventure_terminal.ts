@@ -62,6 +62,6 @@ export class AdventureTerminal {
    * @param action
    */
   sendAction(action: string): void {
-    this._socket.emit('user-action', action);
+    this._socket.emit('player-action', action);
   }
 }
