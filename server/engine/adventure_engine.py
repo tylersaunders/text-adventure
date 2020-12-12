@@ -56,6 +56,7 @@ class AdventureEngine():
             print(action, target, args)
             adventure_text, action_text = getattr(target, action.value)(*args)
         except AttributeError:
+            print('attribute error')
             emit(Sockets.ACTION_TEXT.value,
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return
