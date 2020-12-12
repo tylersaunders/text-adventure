@@ -20,10 +20,14 @@ class Activateable(AdventureObject):
         self.off_description = off_description
 
     def turn_on(self) -> Tuple[str, str]:
+        if self.active is True:
+            return (None, f'The {self.name} is already on.')
         self.active = True
         return (self.on_description, f'You turn on the {self.name}.')
 
     def turn_off(self) -> Tuple[str, str]:
+        if self.active is False:
+            return (None, f'The {self.name} is already off.')
         self.active = False
         return (self.off_description, f'You turn off the {self.name}.')
 
@@ -33,4 +37,4 @@ class Activateable(AdventureObject):
                     f'You take a closer look at the {self.name}.')
         else:
             return (self.off_description,
-                    f'You take a closer look at the {self.name}')
+                    f'You take a closer look at the {self.name}.')

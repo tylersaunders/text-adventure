@@ -1,3 +1,4 @@
+import logging
 from server.engine.scenario import Scenario
 from flask_socketio import SocketIO, emit
 from server.engine.actions import parse, Actions
@@ -21,6 +22,8 @@ class AdventureEngine():
         @self.socket.on(Sockets.PLAYER_ACTIONS.value)
         def handle_user_action(action):
             """Listens for user-action messages and forwards them to act."""
+            logging.debug(
+                'ADVENTURE_ENGINE: incoming player action: {}'.format(action))
             self.act(action)
 
     def __eq__(self, other) -> bool:
@@ -45,18 +48,24 @@ class AdventureEngine():
         Args:
             action: the unparsed player's action from the websocket.
         """
+        # Parse the incoming action, target and arguments.
         action, target, args = parse(action, self.scenario)
 
+        # If the action isn't understood, return the scenario's
+        # default unknown action.
         if action == Actions.UNKNOWN:
             emit(Sockets.ACTION_TEXT.value,
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return
 
+        # try to call the action on the target with the parsed args.
         try:
-            print(action, target, args)
             adventure_text, action_text = getattr(target, action.value)(*args)
         except AttributeError:
-            print('attribute error')
+            logging.debug('Attribute {} not found on {}'.format(
+                action.value, target))
+            # the target doesn't accept that action, so return unknown action
+            # to the user.
             emit(Sockets.ACTION_TEXT.value,
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return

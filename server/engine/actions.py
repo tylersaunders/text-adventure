@@ -23,7 +23,7 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
     """
     prepositions = [
         'of', 'on', 'in', 'to', 'for', 'with', 'from', 'around', 'under',
-        'over', 'out', 'off', 'down'
+        'over', 'out', 'off', 'down', 'at'
     ]
 
     message = message.lower()
