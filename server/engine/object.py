@@ -2,7 +2,8 @@ from typing import Tuple
 
 
 class AdventureObject(object):
-    def __init__(self, name: str, description: str):
+    def __init__(self, id: str, name: str, description: str):
+        self.id = id
         self.name = name
         self.description = description
 
@@ -13,9 +14,9 @@ class AdventureObject(object):
 class Activateable(AdventureObject):
     active = False
 
-    def __init__(self, name: str, description: str, on_description,
+    def __init__(self, id: str, name: str, description: str, on_description,
                  off_description: str):
-        super().__init__(name, description)
+        super().__init__(id, name, description)
         self.on_description = on_description
         self.off_description = off_description
 

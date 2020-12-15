@@ -1,13 +1,13 @@
 import logging
-from server.engine.scenario import Scenario
 from flask_socketio import SocketIO, emit
 from server.engine.actions import parse, Actions
 from server.enums import Sockets
+from server.engine.scenario_parser import load_scenario
 
 
 class AdventureEngine():
     """A Text Adventure engine."""
-    def __init__(self, socketio: SocketIO, scenario: Scenario = None):
+    def __init__(self, socketio: SocketIO, scenario_path: str):
         """Create a new adventure.
 
         Args:
@@ -15,7 +15,10 @@ class AdventureEngine():
                 restore game state.
         """
         self.socket = socketio
-        self.scenario = scenario
+        logging.debug("PARSING SCENARIO")
+        self.scenario = load_scenario(scenario_path)
+        logging.debug(self.scenario)
+        self.scenario.begin()
         emit(Sockets.ADVENTURE_TEXT.value, self.scenario.greeting)
         emit(Sockets.ACTION_TEXT.value, None)
 

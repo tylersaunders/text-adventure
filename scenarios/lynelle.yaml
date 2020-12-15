@@ -1,0 +1,33 @@
+# Scenario
+scenario:
+  title: A dark, cold winter
+  unknown_action: You aren't so sure about that.
+  starting_location_id: cabin
+  locations:
+    - location:
+        id: cabin
+        description: >
+          You are in a dimly lit cabin, high in the rocky mountains.
+          On a small side table near the corner is a lamp.
+          To the north is a grimey cave.
+        exits:
+          north: grimey_cave
+        objects:
+          - cabin_lamp
+    - location:
+        id: grimey_cave
+        description: >
+          A grimy cave in the middle of nowhere.
+          Behind you is a cabin in the woods.
+        exits:
+          south: cabin
+  items:
+    - item:
+        id: cabin_lamp
+        name: lamp
+        base_object: activatable
+        description: A small bronze table lamp.
+        on_description: The lamp throws a soft light throughout the room.
+        off_description: The bulb is cold and dusty.
+
+

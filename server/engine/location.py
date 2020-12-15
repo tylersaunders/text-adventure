@@ -1,13 +1,14 @@
 """Location classes for text-adventure."""
 from typing import List, Tuple
-from server.engine.object import AdventureObject
 
 
 class Location(object):
     """A location in a scenario. (Such as a room or place)."""
-    objects: List[AdventureObject]
+    id: str = ''
+    objects: List[str]
 
-    def __init__(self, description: str) -> None:
+    def __init__(self, id: str, description: str) -> None:
+        self.id = id
         self.description = description
         self.exits = {}
         self.objects = []

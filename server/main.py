@@ -2,7 +2,6 @@ import logging
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from server.engine.adventure_engine import AdventureEngine
-from scenarios import lynelle
 from server.enums import Sockets
 
 socket = SocketIO()
@@ -21,7 +20,7 @@ def create_app():
 
     @socket.on(Sockets.CONNECT.value)
     def socket_connected():
-        AdventureEngine(socket, lynelle.scenario)
+        AdventureEngine(socket, './scenarios/lynelle.yaml')
 
     @app.route('/')
     def index(**_):

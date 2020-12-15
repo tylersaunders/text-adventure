@@ -1,3 +1,4 @@
+import logging
 from typing import Tuple, List
 from enum import Enum
 from server.engine.scenario import Scenario
@@ -31,12 +32,17 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
 
     action, direction = _parse_moving(words)
     if action == Actions.MOVE:
+        logging.debug('action_parse: movement detected, %s, %s, %s', action,
+                      scenario, direction)
         return (action, scenario, [direction])
 
     if len(words) == 1:
         # Assume action is in the form of <verb> (e.g. look, jump).
         verb = words[0]
         action = _parse_action(verb)
+        logging.debug(
+            'action_parse: single command, calling on current location.'
+            '%s, %s', action, scenario.player_location)
         return (action, scenario.player_location, [])
 
     if len(words) == 2:
@@ -47,8 +53,13 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
         # if no target was found, but the current location
         # can accept the action, call the action on the location.
         if not target and hasattr(scenario.player_location, action.value):
+            logging.debug(
+                'action_parse: target cannot accept action, but location can.'
+                ' %s. %s', action, target, scenario.player_location)
             return (action, scenario.player_location, [])
 
+        logging.debug('action_parse: target can accept action, %s. %s', action,
+                      target)
         return (action, target, [])
 
     if len(words) == 3:
@@ -59,8 +70,13 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
         if two in prepositions:
             target = _parse_noun(scenario, noun)
             action = _parse_action(verb, two)
+            logging.debug('action_parse: target and action found, %s. %s',
+                          action, target)
             return (action, target, [])
         target = _parse_noun(scenario, noun, two)
+        logging.debug(
+            'action_parse: target found, but unable to parse unknown action. '
+            '%s, %s', action, target)
         return (Actions.UNKNOWN, target, None)
 
     if len(words) == 4:
@@ -73,14 +89,19 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
             verb, prep, adj, noun = words
             target = _parse_noun(scenario, noun, adj)
             action = _parse_action(verb, two)
+            logging.debug('action_parse: target and action found, %s. %s',
+                          action, target)
             return (action, target, [])
         if three in prepositions:
             verb, noun, prep, noun2 = action
             target = _parse_noun(scenario, noun)
             destination = _parse_noun(scenario, noun)
             action = _parse_action(verb, prep)
+            logging.debug('action_parse: target and action found, %s. %s',
+                          action, target)
             return (action, target, [destination])
         else:
+            logging.debug('action_parse: unable to parse unknown action.')
             return (Actions.UNKNOWN, None, None)
 
 
@@ -123,19 +144,24 @@ def _parse_noun(scenario: Scenario,
                 noun: str,
                 adj: str = None) -> object or None:
 
-    all_named_objs = [
-        object.name for object in scenario.player_location.objects
-        if object.name
+    # Get the object references for all objects in the current
+    # player location.
+    location_objs = [
+        obj for obj in scenario.all_objects.values()
+        if obj.id in scenario.player_location.objects
     ]
+
+    # Get the names of those objects.
+    all_named_objs = [obj.name for obj in location_objs if obj.name]
 
     # if there is only one match for the object, we're done!
     if all_named_objs.count(noun) == 1:
         index = all_named_objs.index(noun)
-        return scenario.player_location.objects[index]
+        return location_objs[index]
 
     if adj:
         adj_in_object = [
-            obj for obj in scenario.player_location.objects
+            obj for obj in location_objs
             if noun in obj.name and adj in str(obj)
         ]
         if len(adj_in_object) == 1:
