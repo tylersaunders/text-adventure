@@ -11,7 +11,7 @@ body {
     background-color: #2B2D2F;
 }
 
-#console {
+.console {
     display: flex;
     flex-direction: column;
 
@@ -21,7 +21,7 @@ body {
     background-color: lightgray;
 }
 
-#adventure-text {
+.adventure-text {
     height: 250px;
     border-bottom: 4px solid #3eb489;
 
@@ -30,7 +30,7 @@ body {
     overflow-y: auto;
 }
 
-#terminal-wrapper {
+.terminal-wrapper {
     display: flex;
     flex-direction: column;
 
@@ -38,11 +38,11 @@ body {
     padding: 8px 40px;
 }
 
-#action-text {
+.action-text {
     text-align: center;
 }
 
-#terminal {
+.terminal {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -59,7 +59,7 @@ body {
     font-size: 18px;
 }
 
-#terminal::placeholder {
+.terminal::placeholder {
     color: #cccccc;
     opacity: 1;
 }

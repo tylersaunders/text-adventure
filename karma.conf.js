@@ -18,7 +18,7 @@ module.exports = function(config) {
       {pattern: 'build/index.html', watched: false, served: true},
       {pattern: 'build/bundle.js', watched: false, served: true},
       {pattern: 'build/bundle.css', watched: false, served: true},
-      'spec/*.spec.ts'
+      'spec/*.spec.ts',
     ],
 
 
@@ -31,11 +31,15 @@ module.exports = function(config) {
     // https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {'**/*.ts': 'karma-typescript'},
 
+    karmaTypescriptConfig: {
+      tsconfig: './tsconfig.json',
+    },
+
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'karma-typescript'],
+    reporters: ['spec', 'karma-typescript'],
 
 
     // web server port
@@ -69,6 +73,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
-  })
-}
+    concurrency: Infinity,
+  });
+};

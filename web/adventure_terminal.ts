@@ -16,23 +16,23 @@ export class AdventureTerminal {
   constructor(private readonly _socket: SocketIOClient.Socket) {
     this.host = document.createElement('div');
     document.body.append(this.host);
-    this.host.id = 'console';
+    this.host.classList.add('console');
 
     // Build Display.
     this.adventureDisplay = document.createElement('div');
-    this.adventureDisplay.id = 'adventure-text';
+    this.adventureDisplay.classList.add('adventure-text');
     this.host.appendChild(this.adventureDisplay);
 
     // Build Terminal Input.
     const terminalWrapper = document.createElement('div');
-    terminalWrapper.id = 'terminal-wrapper';
+    terminalWrapper.classList.add('terminal-wrapper');
 
     this.actionDisplay = document.createElement('div');
-    this.actionDisplay.id = 'action-text';
+    this.actionDisplay.classList.add('action-text');
     terminalWrapper.appendChild(this.actionDisplay);
 
     this.input = document.createElement('input');
-    this.input.id = 'terminal';
+    this.input.classList.add('terminal');
     this.input.placeholder = this.INPUT_PLACEHOLDER;
     this.input.addEventListener('keyup', (e) => {
       if (this.INPUT_KEYS.includes(e.keyCode)) {

@@ -4,7 +4,7 @@
     "description": "A retro text adventure engine.",
     "main": "main.js",
     "scripts": {
-        "test": "karma start",
+        "test": "npm run build && karma start",
         "build": "webpack --config config/webpack.config.js && cp web/index.html build/index.html"
     },
     "repository": {
@@ -37,6 +37,7 @@
         "karma": "^5.1.0",
         "karma-chrome-launcher": "^3.1.0",
         "karma-jasmine": "^3.3.1",
+        "karma-spec-reporter": "0.0.32",
         "karma-typescript": "^5.0.3",
         "mini-css-extract-plugin": "^0.9.0",
         "postcss-loader": "^3.0.0",
