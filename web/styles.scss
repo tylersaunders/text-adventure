@@ -1,3 +1,5 @@
+@use "colors";
+
 body {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -8,11 +10,17 @@ body {
     font-family: 'Merriweather', serrif;
     font-size: 16px;
 
-    background-color: #2B2D2F;
+    background-color: colors.$gray-dark;
+}
+
+.adventure-terminal {
+    width: 60%;
+    max-width: 500px;
+    margin: auto;
 }
 
 .title {
-    color: #daeaefa6;
+    color: colors.$gray-title;
     font-size: 24px;
     font-family: 'Merriweather', serrif;
     text-align: center;
@@ -22,16 +30,12 @@ body {
     display: flex;
     flex-direction: column;
 
-    width: 60%;
-    max-width: 500px;
-    margin: auto;
-
-    background-color: lightgray;
+    background-color: colors.$gray-light;
 }
 
 .adventure-text {
     height: 250px;
-    border-bottom: 4px solid #3eb489;
+    border-bottom: 4px solid colors.$mint-primary;
 
     padding: 16px 40px;
 
@@ -61,13 +65,31 @@ body {
     margin-top: auto;
     padding: 12px 40px;
 
-    background-color: #e6e6e6;
+    background-color: colors.$white;
 
     font-family: 'Merriweather', serrif;
     font-size: 18px;
 }
 
 .terminal::placeholder {
-    color: #cccccc;
+    color: colors.$gray-faint;
     opacity: 1;
+}
+
+.action-hints {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    color: colors.$mint-primary;
+
+    p {
+        font-size: 14px;
+        color: colors.$mint-accent;
+        font-weight: bold;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
 }

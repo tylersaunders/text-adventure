@@ -1,4 +1,5 @@
 import * as socketIo from 'socket.io-client';
+import {Actions, Directions} from './enums';
 
 /**
  * An adventure terminal implementation that displays story text, action text
@@ -7,26 +8,31 @@ import * as socketIo from 'socket.io-client';
 export class AdventureTerminal {
   readonly INPUT_PLACEHOLDER = 'what next?';
   readonly INPUT_KEYS = [13];
+  readonly ACTION_KEYS = Object.values(Actions);
+  readonly DIRECTION_KEYS = Object.values(Directions);
 
   readonly host: HTMLElement;
+  readonly console: HTMLElement;
   readonly title: HTMLElement;
   readonly adventureDisplay: HTMLDivElement;
   readonly actionDisplay: HTMLDivElement;
   readonly input: HTMLInputElement;
+  readonly actionHints:HTMLDivElement;
 
   constructor(private readonly _socket: SocketIOClient.Socket) {
-    this.title = document.createElement('p');
-    document.body.append(this.title);
-    this.title.classList.add('title');
-
     this.host = document.createElement('div');
-    document.body.append(this.host);
-    this.host.classList.add('console');
+    this.host.classList.add('adventure-terminal');
+    this.title = document.createElement('p');
+    this.title.classList.add('title');
+    this.host.append(this.title);
+
+    this.console = document.createElement('div');
+    this.console.classList.add('console');
 
     // Build Display.
     this.adventureDisplay = document.createElement('div');
     this.adventureDisplay.classList.add('adventure-text');
-    this.host.appendChild(this.adventureDisplay);
+    this.console.appendChild(this.adventureDisplay);
 
     // Build Terminal Input.
     const terminalWrapper = document.createElement('div');
@@ -47,7 +53,36 @@ export class AdventureTerminal {
     });
     terminalWrapper.appendChild(this.input);
 
-    this.host.appendChild(terminalWrapper);
+    this.console.appendChild(terminalWrapper);
+
+    this.actionHints = document.createElement('div');
+    this.actionHints.classList.add('action-hints');
+    const actionDiv = document.createElement('div');
+    const actionText = document.createElement('p');
+    actionText.textContent = 'actions';
+    const actionKeys = document.createElement('ul');
+    for(const key of this.ACTION_KEYS){
+      const li = document.createElement('li');
+      li.textContent = key;
+      actionKeys.appendChild(li);
+    }
+    actionDiv.append(actionText,actionKeys);
+
+    const directionDiv = document.createElement('div');
+    const directionText = document.createElement('p');
+    directionText.textContent = 'directions';
+    const directionKeys = document.createElement('ul');
+    for(const key of this.DIRECTION_KEYS){
+      const li = document.createElement('li');
+      li.textContent = key;
+      directionKeys.appendChild(li);
+    }
+    directionDiv.append(directionText,directionKeys);
+
+    this.actionHints.append(actionDiv, directionDiv);
+
+    this.host.append(this.console,this.actionHints);
+    document.body.append(this.host);
 
     this.setupSockets();
   }

@@ -5,7 +5,7 @@
     "main": "main.js",
     "scripts": {
         "test": "npm run build && karma start",
-        "build": "webpack --config config/webpack.config.js && cp web/index.html build/index.html"
+        "build": "rm build/* && webpack --config config/webpack.config.js && cp web/index.html build/index.html"
     },
     "repository": {
         "type": "git",
