@@ -14,8 +14,10 @@ def load_scenario(path: str) -> Scenario:
             logging.exception('Failed to safe_load yaml')
 
         scenario_yaml = loaded_yaml['scenario']
-        scenario = Scenario(scenario_yaml['title'],
-                            scenario_yaml['starting_location_id'])
+        title = scenario_yaml['title']
+        greeting = scenario_yaml['greeting']
+        starting_location_id = scenario_yaml['starting_location_id']
+        scenario = Scenario(title, greeting, starting_location_id)
 
         for loc in scenario_yaml['locations']:
             loc_dict = loc['location']

@@ -9,11 +9,16 @@ export class AdventureTerminal {
   readonly INPUT_KEYS = [13];
 
   readonly host: HTMLElement;
+  readonly title: HTMLElement;
   readonly adventureDisplay: HTMLDivElement;
   readonly actionDisplay: HTMLDivElement;
   readonly input: HTMLInputElement;
 
   constructor(private readonly _socket: SocketIOClient.Socket) {
+    this.title = document.createElement('p');
+    document.body.append(this.title);
+    this.title.classList.add('title');
+
     this.host = document.createElement('div');
     document.body.append(this.host);
     this.host.classList.add('console');
@@ -48,12 +53,20 @@ export class AdventureTerminal {
   }
 
   setupSockets(): void {
+    this._socket.on('adventure-title', (message:string)=>{
+      this.title.textContent = message;
+    })
+
     this._socket.on('adventure-text', (message: string) => {
       this.adventureDisplay.textContent = message;
     });
 
     this._socket.on('action-text', (message: string) => {
       this.actionDisplay.textContent = message;
+    });
+
+    this._socket.on('connect', (message:string)=>{
+      this._socket.emit('test','test!');
     });
   }
 

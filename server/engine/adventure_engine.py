@@ -19,6 +19,7 @@ class AdventureEngine():
         self.scenario = load_scenario(scenario_path)
         logging.debug(self.scenario)
         self.scenario.begin()
+        emit(Sockets.ADVENTURE_TITLE.value, self.scenario.title)
         emit(Sockets.ADVENTURE_TEXT.value, self.scenario.greeting)
         emit(Sockets.ACTION_TEXT.value, None)
 

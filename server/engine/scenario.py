@@ -4,13 +4,17 @@ from server.engine.object import AdventureObject
 
 
 class Scenario():
+    """A text adventure scenario."""
+
+    title: str = ''
+    greeting: str = ''
     UNKNOWN_ACTION_RESPONSE: str = 'You aren\'t so sure about that.'
     all_locations = {}
     all_objects = {}
     player_location: Location = None
-    greeting: str = ''
-    """A text adventure scenario."""
-    def __init__(self, greeting: str, starting_location_id: str):
+
+    def __init__(self, title: str, greeting: str, starting_location_id: str):
+        self.title = title
         self.greeting = greeting
         self.starting_location_id = starting_location_id
 
