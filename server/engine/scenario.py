@@ -12,6 +12,7 @@ class Scenario():
     all_locations = {}
     all_objects = {}
     player_location: Location = None
+    player_inventory = {}
 
     def __init__(self, title: str, greeting: str, starting_location_id: str):
         self.title = title
@@ -53,7 +54,7 @@ class Scenario():
             raise RuntimeError('staring location not found in all_locations')
         self.player_location = self.all_locations[self.starting_location_id]
 
-    def move(self, direction: str):
+    def move(self, direction: str, **kwargs):
         if direction in self.player_location.exits:
             self.player_location = self.all_locations[
                 self.player_location.exits[direction]]

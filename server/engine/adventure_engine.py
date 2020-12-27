@@ -53,7 +53,7 @@ class AdventureEngine():
             action: the unparsed player's action from the websocket.
         """
         # Parse the incoming action, target and arguments.
-        action, target, args = parse(action, self.scenario)
+        action, target, kwargs = parse(action, self.scenario)
 
         # If the action isn't understood, return the scenario's
         # default unknown action.
@@ -64,7 +64,8 @@ class AdventureEngine():
 
         # try to call the action on the target with the parsed args.
         try:
-            adventure_text, action_text = getattr(target, action.value)(*args)
+            adventure_text, action_text = getattr(target,
+                                                  action.value)(**kwargs)
         except AttributeError:
             logging.debug('Attribute {} not found on {}'.format(
                 action.value, target))
@@ -73,6 +74,8 @@ class AdventureEngine():
             emit(Sockets.ACTION_TEXT.value,
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return
+
+        logging.debug(self.scenario.player_inventory)
 
         if adventure_text:
             emit(Sockets.ADVENTURE_TEXT.value, adventure_text)

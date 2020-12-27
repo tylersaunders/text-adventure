@@ -13,5 +13,5 @@ class Location(object):
         self.exits = {}
         self.objects = []
 
-    def look(self) -> Tuple[str, str]:
+    def look(self, all_objects: object, **kwargs) -> Tuple[str, str]:
         return self.description, 'You look around.'
