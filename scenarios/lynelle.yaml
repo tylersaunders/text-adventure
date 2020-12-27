@@ -1,24 +1,29 @@
 # Scenario
 scenario:
   title: A dark, cold winter
+  greeting: >
+    You wake up laying on the cold wooden floor. You don't remember
+    how you got here or where you are. The last thing you remember
+    is driving up into the mountains with your family.
   unknown_action: You aren't so sure about that.
   starting_location_id: cabin
   locations:
     - location:
         id: cabin
         description: >
-          You are in a dimly lit cabin, high in the rocky mountains.
-          On a small side table near the corner is a lamp.
-          To the north is a grimey cave.
+          You are in a dimly lit cabin, a fierce  wind howls outside and
+          rattles the windows. On a small side table near the corner is
+          a lamp. To the north is a wooden door.
         exits:
-          north: grimey_cave
+          north: mountain_landscape
         objects:
           - cabin_lamp
     - location:
-        id: grimey_cave
+        id: mountain_landscape
         description: >
-          A grimy cave in the middle of nowhere.
-          Behind you is a cabin in the woods.
+          You emerge into a snowy mountain landscape. There is about a foot
+          of snow on the ground, and you can see large mountain peaks far
+          in the distance to the east and west.
         exits:
           south: cabin
   items:
