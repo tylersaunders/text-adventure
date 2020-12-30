@@ -1,5 +1,6 @@
 """Location classes for text-adventure."""
 from typing import List, Tuple
+from server.engine.action_result import ActionResult
 
 
 class Location(object):
@@ -14,4 +15,5 @@ class Location(object):
         self.objects = []
 
     def look(self, all_objects: object, **kwargs) -> Tuple[str, str]:
-        return self.description, 'You look around.'
+        return ActionResult(adventure_text=self.description,
+                            action_text='You look around.')

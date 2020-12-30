@@ -2,8 +2,9 @@ from enum import Enum
 
 
 class Sockets(Enum):
-    CONNECT = 'connect'
+    ACTION_TEXT = 'action-text'
     ADVENTURE_TITLE = 'adventure-title'
     ADVENTURE_TEXT = 'adventure-text'
-    ACTION_TEXT = 'action-text'
+    CONNECT = 'connect'
+    INVENTORY = 'inventory'
     PLAYER_ACTIONS = 'player-action'

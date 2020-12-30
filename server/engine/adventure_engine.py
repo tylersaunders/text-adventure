@@ -22,6 +22,10 @@ class AdventureEngine():
         emit(Sockets.ADVENTURE_TITLE.value, self.scenario.title)
         emit(Sockets.ADVENTURE_TEXT.value, self.scenario.greeting)
         emit(Sockets.ACTION_TEXT.value, None)
+        emit(
+            Sockets.INVENTORY.value, ','.join([
+                item.name for item in self.scenario.player_inventory.values()
+            ]))
 
         @self.socket.on(Sockets.PLAYER_ACTIONS.value)
         def handle_user_action(action):
@@ -64,10 +68,10 @@ class AdventureEngine():
 
         # try to call the action on the target with the parsed args.
         try:
-            adventure_text, action_text = getattr(target,
-                                                  action.value)(**kwargs)
+            action_result = getattr(target, action.value)(**kwargs)
+            logging.debug(action_result)
         except AttributeError:
-            logging.debug('Attribute {} not found on {}'.format(
+            logging.exception('Attribute {} not found on {}'.format(
                 action.value, target))
             # the target doesn't accept that action, so return unknown action
             # to the user.
@@ -75,9 +79,12 @@ class AdventureEngine():
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return
 
-        logging.debug(self.scenario.player_inventory)
-
-        if adventure_text:
-            emit(Sockets.ADVENTURE_TEXT.value, adventure_text)
-        if action_text:
-            emit(Sockets.ACTION_TEXT.value, action_text)
+        if action_result.adventure_text:
+            emit(Sockets.ADVENTURE_TEXT.value, action_result.adventure_text)
+        if action_result.action_text:
+            emit(Sockets.ACTION_TEXT.value, action_result.action_text)
+        if action_result.push_inventory_update:
+            item_names = [
+                item.name for item in self.scenario.player_inventory.values()
+            ]
+            emit('inventory', ','.join(item_names))
