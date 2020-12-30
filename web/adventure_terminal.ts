@@ -17,7 +17,8 @@ export class AdventureTerminal {
   readonly adventureDisplay: HTMLDivElement;
   readonly actionDisplay: HTMLDivElement;
   readonly input: HTMLInputElement;
-  readonly actionHints:HTMLDivElement;
+  readonly infoPanel:HTMLDivElement;
+  readonly inventoryList:HTMLElement;
 
   constructor(private readonly _socket: SocketIOClient.Socket) {
     this.host = document.createElement('div');
@@ -55,8 +56,8 @@ export class AdventureTerminal {
 
     this.console.appendChild(terminalWrapper);
 
-    this.actionHints = document.createElement('div');
-    this.actionHints.classList.add('action-hints');
+    this.infoPanel = document.createElement('div');
+    this.infoPanel.classList.add('info-panel');
     const actionDiv = document.createElement('div');
     const actionText = document.createElement('p');
     actionText.textContent = 'actions';
@@ -79,15 +80,26 @@ export class AdventureTerminal {
     }
     directionDiv.append(directionText,directionKeys);
 
-    this.actionHints.append(actionDiv, directionDiv);
+    const inventoryWrapper = document.createElement('div');
+    inventoryWrapper.classList.add('inventory-wrapper');
+    const inventoryText = document.createElement('p');
+    inventoryText.innerText = 'inventory';
+    inventoryWrapper.appendChild(inventoryText);
+    this.inventoryList = document.createElement('ul');
+    inventoryWrapper.appendChild(this.inventoryList);
 
-    this.host.append(this.console,this.actionHints);
+    this.infoPanel.append(actionDiv, directionDiv, inventoryWrapper);
+
+    this.host.append(this.console,this.infoPanel);
     document.body.append(this.host);
 
     this.setupSockets();
   }
 
-  setupSockets(): void {
+  /**
+   * Set up socket listeners for backend websocket channels.
+   */
+  private setupSockets(): void {
     this._socket.on('adventure-title', (message:string)=>{
       this.title.textContent = message;
     })
@@ -100,16 +112,27 @@ export class AdventureTerminal {
       this.actionDisplay.textContent = message;
     });
 
-    this._socket.on('connect', (message:string)=>{
-      this._socket.emit('test','test!');
+    this._socket.on('inventory', (message:string) => {
+      // Assume message is a comma seperated list of item names
+      // i.e. key,coffee mug,amulet of truth
+      const inventory = message.split(',');
+      while(this.inventoryList.lastChild){
+        this.inventoryList.removeChild(this.inventoryList.lastChild);
+      }
+      for (const item of inventory){
+        const li = document.createElement('li');
+        li.textContent = item;
+        this.inventoryList.appendChild(li);
+      }
     });
+
   }
 
   /**
-   * Send a user action through the current socket.
+   * Send a user action through the current websocket.
    * @param action
    */
-  sendAction(action: string): void {
+  private sendAction(action: string): void {
     this._socket.emit('player-action', action);
   }
 }
