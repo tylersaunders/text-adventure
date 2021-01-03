@@ -18,6 +18,7 @@ scenario:
           north: mountain_landscape
         objects:
           - cabin_lamp
+          - brass_key
     - location:
         id: mountain_landscape
         description: >
@@ -34,5 +35,10 @@ scenario:
         description: A small bronze table lamp.
         on_description: The lamp throws a soft light throughout the room.
         off_description: The bulb is cold and dusty.
+    - item:
+        id: brass_key
+        name: key
+        description: A small brass key.
+        takeable: true
 
 

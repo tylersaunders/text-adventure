@@ -1,18 +1,20 @@
 import logging
-from typing import Tuple, List
+from typing import Dict, List, Tuple
 from enum import Enum
 from server.engine.scenario import Scenario
 
 
 class Actions(Enum):
     UNKNOWN = 'unknown'
+    DROP = 'drop'
     LOOK = 'look'
     MOVE = 'move'
+    TAKE = 'take'
     TURN_ON = 'turn_on'
     TURN_OFF = 'turn_off'
 
 
-def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
+def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, Dict]:
     """Attempts to parse the player action into an action, target and arguments.
 
     Args:
@@ -26,6 +28,11 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
         'of', 'on', 'in', 'to', 'for', 'with', 'from', 'around', 'under',
         'over', 'out', 'off', 'down', 'at'
     ]
+    kwargs = {
+        'player_inventory': scenario.player_inventory,
+        'player_location': scenario.player_location,
+        'all_objects': scenario.all_objects,
+    }
 
     message = message.lower()
     words = message.split()
@@ -34,7 +41,7 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
     if action == Actions.MOVE:
         logging.debug('action_parse: movement detected, %s, %s, %s', action,
                       scenario, direction)
-        return (action, scenario, [direction])
+        return (action, scenario, {'direction': direction, **kwargs})
 
     if len(words) == 1:
         # Assume action is in the form of <verb> (e.g. look, jump).
@@ -43,7 +50,7 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
         logging.debug(
             'action_parse: single command, calling on current location.'
             '%s, %s', action, scenario.player_location)
-        return (action, scenario.player_location, [])
+        return (action, scenario.player_location, {**kwargs})
 
     if len(words) == 2:
         # Assume action is in the form <verb noun> (e.g. get lamp)
@@ -56,11 +63,11 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
             logging.debug(
                 'action_parse: target cannot accept action, but location can.'
                 ' %s. %s', action, target, scenario.player_location)
-            return (action, scenario.player_location, [])
+            return (action, scenario.player_location, {**kwargs})
 
         logging.debug('action_parse: target can accept action, %s. %s', action,
                       target)
-        return (action, target, [])
+        return (action, target, {**kwargs})
 
     if len(words) == 3:
         # Assume action is in the form <verb adjective noun>
@@ -72,11 +79,14 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
             action = _parse_action(verb, two)
             logging.debug('action_parse: target and action found, %s. %s',
                           action, target)
-            return (action, target, [])
+            return (action, target, {**kwargs})
+        action = _parse_action(verb)
         target = _parse_noun(scenario, noun, two)
         logging.debug(
             'action_parse: target found, but unable to parse unknown action. '
             '%s, %s', action, target)
+        if action is not Actions.UNKNOWN:
+            return (action, target, {**kwargs})
         return (Actions.UNKNOWN, target, None)
 
     if len(words) == 4:
@@ -91,7 +101,7 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
             action = _parse_action(verb, two)
             logging.debug('action_parse: target and action found, %s. %s',
                           action, target)
-            return (action, target, [])
+            return (action, target, {**kwargs})
         if three in prepositions:
             verb, noun, prep, noun2 = action
             target = _parse_noun(scenario, noun)
@@ -99,10 +109,10 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, List]:
             action = _parse_action(verb, prep)
             logging.debug('action_parse: target and action found, %s. %s',
                           action, target)
-            return (action, target, [destination])
+            return (action, target, {'destination': destination, **kwargs})
         else:
             logging.debug('action_parse: unable to parse unknown action.')
-            return (Actions.UNKNOWN, None, None)
+            return (Actions.UNKNOWN, None, {**kwargs})
 
 
 def _parse_action(verb: str, preposition: str = None) -> Actions:
@@ -146,22 +156,24 @@ def _parse_noun(scenario: Scenario,
 
     # Get the object references for all objects in the current
     # player location.
-    location_objs = [
+    relevant_objs = [
         obj for obj in scenario.all_objects.values()
         if obj.id in scenario.player_location.objects
     ]
+    # Include the items the player is currently carrying.
+    relevant_objs += [obj for obj in scenario.player_inventory.values()]
 
     # Get the names of those objects.
-    all_named_objs = [obj.name for obj in location_objs if obj.name]
+    all_named_objs = [obj.name for obj in relevant_objs if obj.name]
 
     # if there is only one match for the object, we're done!
     if all_named_objs.count(noun) == 1:
         index = all_named_objs.index(noun)
-        return location_objs[index]
+        return relevant_objs[index]
 
     if adj:
         adj_in_object = [
-            obj for obj in location_objs
+            obj for obj in relevant_objs
             if noun in obj.name and adj in str(obj)
         ]
         if len(adj_in_object) == 1:

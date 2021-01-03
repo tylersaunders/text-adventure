@@ -1,8 +1,10 @@
 import json
 import logging
 import uuid
+from dataclasses import replace
 from server.engine.location import Location
 from server.engine.object import AdventureObject
+from server.engine.action_result import ActionResult
 
 
 class Scenario():
@@ -17,10 +19,11 @@ class Scenario():
         self.game_id = kwargs.get('game_id', uuid.uuid4().__str__())
         self.all_locations = {}
         self.all_objects = {}
+        self.player_inventory = {}
         self.player_location = None
 
     def add_location(self, loc: Location) -> None:
-        """Register a location in the scenario
+        """Register a location in the scenario.
 
         Args:
             loc: The location to register.
@@ -32,7 +35,7 @@ class Scenario():
             self.all_locations[loc.id] = loc
 
     def add_object(self, obj: AdventureObject) -> None:
-        """Register a location in the scenario
+        """Register a location in the scenario.
 
         Args:
             loc: The location to register.
@@ -44,6 +47,10 @@ class Scenario():
             self.all_objects[obj.id] = obj
 
     def begin(self) -> None:
+        """Begins the scenario.
+        The initialization logic once a Scenario is fully assembled and the
+        AdventureEngine is ready to send the first message to the player.
+        """
         logging.debug('SCENARIO CONFIGURATION:')
         logging.debug(
             'all_locations: %s',
@@ -54,13 +61,17 @@ class Scenario():
             raise RuntimeError('staring location not found in all_locations')
         self.player_location = self.all_locations[self.starting_location_id]
 
-    def move(self, direction: str):
+    def move(self, direction: str, **kwargs):
+        """Move action handler for the scenario.
+        NOTE: This is the only handler that is called on a MOVE action.
+        """
         if direction in self.player_location.exits:
             self.player_location = self.all_locations[
                 self.player_location.exits[direction]]
-            return (self.player_location.look(), f'You travel {direction}.')
+            return replace(self.player_location.look(kwargs),
+                           action_text=f'You travel {direction}.')
         else:
-            return (None, 'You cannot go that way.')
+            return ActionResult(action_text='You cannot go that way.')
 
     def serialize(self) -> str:
         """Transform the current scenario into a data string for storage."""

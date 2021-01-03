@@ -30,13 +30,25 @@ class AdventureEngine():
             emit(Sockets.ADVENTURE_TEXT.value, self.scenario.greeting)
             emit(Sockets.ACTION_TEXT.value, None)
             emit(Sockets.GAME_ID.value, self.scenario.game_id)
+            emit(
+                Sockets.INVENTORY.value, ','.join([
+                    item.name
+                    for item in self.scenario.player_inventory.values()
+                ]))
             self.serialize()
         elif game_id:
             logging.debug("Resuming game id {}".format(game_id))
             self.scenario = self.deserialize(game_id)
             emit(Sockets.ADVENTURE_TITLE.value, self.scenario.title)
-            emit(Sockets.ADVENTURE_TEXT.value,
-                 self.scenario.player_location.look())
+            emit(
+                Sockets.ADVENTURE_TEXT.value,
+                self.scenario.player_location.look(
+                    all_objects=self.scenario.all_objects).adventure_text)
+            emit(
+                Sockets.INVENTORY.value, ','.join([
+                    item.name
+                    for item in self.scenario.player_inventory.values()
+                ]))
 
         @self.socket.on(Sockets.PLAYER_ACTIONS.value)
         def handle_user_action(action):
@@ -81,7 +93,7 @@ class AdventureEngine():
             action: the unparsed player's action from the websocket.
         """
         # Parse the incoming action, target and arguments.
-        action, target, args = parse(action, self.scenario)
+        action, target, kwargs = parse(action, self.scenario)
 
         # If the action isn't understood, return the scenario's
         # default unknown action.
@@ -92,9 +104,10 @@ class AdventureEngine():
 
         # try to call the action on the target with the parsed args.
         try:
-            adventure_text, action_text = getattr(target, action.value)(*args)
+            action_result = getattr(target, action.value)(**kwargs)
+            logging.debug(action_result)
         except AttributeError:
-            logging.debug('Attribute {} not found on {}'.format(
+            logging.exception('Attribute {} not found on {}'.format(
                 action.value, target))
             # the target doesn't accept that action, so return unknown action
             # to the user.
@@ -102,8 +115,13 @@ class AdventureEngine():
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return
 
-        if adventure_text:
-            emit(Sockets.ADVENTURE_TEXT.value, adventure_text)
-        if action_text:
-            emit(Sockets.ACTION_TEXT.value, action_text)
+        if action_result.adventure_text:
+            emit(Sockets.ADVENTURE_TEXT.value, action_result.adventure_text)
+        if action_result.action_text:
+            emit(Sockets.ACTION_TEXT.value, action_result.action_text)
+        if action_result.push_inventory_update:
+            item_names = [
+                item.name for item in self.scenario.player_inventory.values()
+            ]
+            emit(Sockets.INVENTORY.value, ','.join(item_names))
         self.serialize()

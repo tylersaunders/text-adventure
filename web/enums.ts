@@ -3,6 +3,8 @@
  */
 export enum Actions {
   LOOK = 'look',
+  TAKE = 'take',
+  DROP = 'drop',
   TURN_ON = 'turn on',
   TURN_OFF = 'turn off',
 }
