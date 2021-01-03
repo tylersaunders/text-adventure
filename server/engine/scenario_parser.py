@@ -42,14 +42,15 @@ def load_scenario(path: str) -> Scenario:
                     item_dict.get('description'),
                     item_dict.get('on_description'),
                     item_dict.get('off_description'),
-                    bool(item_dict.get('takeable', False)),
+                    takeable=bool(item_dict.get('takeable', False)),
+                    active=bool(item_dict.get('active', False)),
                 )
             else:
                 obj = AdventureObject(
                     item_dict.get('id'),
                     item_dict.get('name'),
                     item_dict.get('description'),
-                    bool(item_dict.get('takeable', False)),
+                    takeable=bool(item_dict.get('takeable', False)),
                 )
             logging.debug(obj)
             scenario.add_object(obj)
