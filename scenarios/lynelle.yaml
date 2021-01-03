@@ -35,6 +35,7 @@ scenario:
         description: A small bronze table lamp.
         on_description: The lamp throws a soft light throughout the room.
         off_description: The bulb is cold and dusty.
+        active: true
     - item:
         id: brass_key
         name: key

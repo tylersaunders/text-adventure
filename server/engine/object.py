@@ -13,13 +13,7 @@ class AdventureObject(object):
     Objects can only be picked up & dropped by the player if they are marked
     with takeable=True.
     """
-    def __init__(
-        self,
-        id: str,
-        name: str,
-        description: str,
-        **kwargs,
-    ):
+    def __init__(self, id: str, name: str, description: str, **kwargs):
         self.object_type = 'adventure_object'
         self.id = id
         self.name = name
@@ -92,7 +86,8 @@ class Activateable(AdventureObject):
     """
     def __init__(self, id: str, name: str, description: str, on_description,
                  off_description: str, **kwargs):
-        super().__init__(id, name, description)
+        print(kwargs)
+        super().__init__(id, name, description, **kwargs)
         self.active = kwargs.get('active', False)
         self.object_type = 'activateable'
         self.on_description = on_description
