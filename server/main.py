@@ -14,13 +14,25 @@ def create_app():
         static_folder='../build',
         template_folder='../build/',
     )
+    app.config.from_mapping(SECRET_KEY='text-adventure', )
 
     socket.init_app(app)
     logging.basicConfig(level=logging.DEBUG)
 
     @socket.on(Sockets.CONNECT.value)
     def socket_connected():
-        AdventureEngine(socket, './scenarios/lynelle.yaml')
+        logging.debug('NEW PLAYER CONNECTED.')
+
+    @socket.on(Sockets.START_GAME.value)
+    def socket_start_game():
+        logging.debug('NEW GAME REQUESTED BY PLAYER')
+        AdventureEngine(socketio=socket,
+                        scenario_path='./scenarios/lynelle.yaml')
+
+    @socket.on(Sockets.LOAD_GAME.value)
+    def socket_load_game(game_id: str):
+        logging.debug('LOAD GAME {} REQUESTED'.format(game_id))
+        AdventureEngine(socketio=socket, game_id=game_id)
 
     @app.route('/')
     def index(**_):

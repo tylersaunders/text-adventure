@@ -7,6 +7,9 @@ server/env/
 # Build Directory
 build/
 
+# saved game directories
+games/
+
 # tern
 .tern-project
 

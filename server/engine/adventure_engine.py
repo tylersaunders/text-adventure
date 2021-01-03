@@ -1,13 +1,19 @@
 import logging
+import os
 from flask_socketio import SocketIO, emit
 from server.engine.actions import parse, Actions
 from server.enums import Sockets
 from server.engine.scenario_parser import load_scenario
+from server.engine.scenario import Scenario
+from typing import Optional
 
 
 class AdventureEngine():
     """A Text Adventure engine."""
-    def __init__(self, socketio: SocketIO, scenario_path: str):
+    def __init__(self,
+                 socketio: SocketIO,
+                 scenario_path: Optional[str] = None,
+                 game_id: Optional[str] = None):
         """Create a new adventure.
 
         Args:
@@ -15,13 +21,22 @@ class AdventureEngine():
                 restore game state.
         """
         self.socket = socketio
-        logging.debug("PARSING SCENARIO")
-        self.scenario = load_scenario(scenario_path)
-        logging.debug(self.scenario)
-        self.scenario.begin()
-        emit(Sockets.ADVENTURE_TITLE.value, self.scenario.title)
-        emit(Sockets.ADVENTURE_TEXT.value, self.scenario.greeting)
-        emit(Sockets.ACTION_TEXT.value, None)
+        if scenario_path:
+            logging.debug("PARSING SCENARIO")
+            self.scenario = load_scenario(scenario_path)
+            logging.debug(self.scenario)
+            self.scenario.begin()
+            emit(Sockets.ADVENTURE_TITLE.value, self.scenario.title)
+            emit(Sockets.ADVENTURE_TEXT.value, self.scenario.greeting)
+            emit(Sockets.ACTION_TEXT.value, None)
+            emit(Sockets.GAME_ID.value, self.scenario.game_id)
+            self.serialize()
+        elif game_id:
+            logging.debug("Resuming game id {}".format(game_id))
+            self.scenario = self.deserialize(game_id)
+            emit(Sockets.ADVENTURE_TITLE.value, self.scenario.title)
+            emit(Sockets.ADVENTURE_TEXT.value,
+                 self.scenario.player_location.look())
 
         @self.socket.on(Sockets.PLAYER_ACTIONS.value)
         def handle_user_action(action):
@@ -38,13 +53,26 @@ class AdventureEngine():
         """Compares to text adventure instances for inequality"""
         return True
 
-    def deserialize(data) -> None:
+    def deserialize(self, game_id: str) -> Scenario:
         """Restore the adventure state."""
-        pass
+        if not os.path.exists(f'games'):
+            raise RuntimeError('No games directory found.')
+        try:
+            with open(f"./games/{game_id}", "r") as saved_game:
+                data = saved_game.read()
+                saved_game.close()
+        except IOError:
+            logging.exception('Requested game data does not exist.')
+        print(data)
+        return Scenario.deserialize(data)
 
-    def serialize(self) -> str:
+    def serialize(self) -> None:
         """Save the current adventure state."""
-        pass
+        if not os.path.exists('games'):
+            os.makedirs('games')
+        with open(f'./games/{self.scenario.game_id}', "w+") as save_game:
+            save_game.write(self.scenario.serialize())
+            save_game.close()
 
     def act(self, action) -> None:
         """Takes an action and attempts to call it on the adventure instance.
@@ -78,3 +106,4 @@ class AdventureEngine():
             emit(Sockets.ADVENTURE_TEXT.value, adventure_text)
         if action_text:
             emit(Sockets.ACTION_TEXT.value, action_text)
+        self.serialize()
