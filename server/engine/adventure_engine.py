@@ -75,7 +75,6 @@ class AdventureEngine():
                 saved_game.close()
         except IOError:
             logging.exception('Requested game data does not exist.')
-        print(data)
         return Scenario.deserialize(data)
 
     def serialize(self) -> None:
