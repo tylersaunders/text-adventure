@@ -1,11 +1,11 @@
 # Dependency directories
 __pycache__/
 node_modules/
-server/env/
+env/
 .pytype/
 
 # Build Directory
-build/
+bazel-*
 
 # saved game directories
 games/

@@ -1,18 +1,20 @@
 import logging
-from flask import Flask, render_template
+import os
+from flask import Flask, render_template, send_file
 from flask_socketio import SocketIO
 from server.engine.adventure_engine import AdventureEngine
 from server.enums import Sockets
 
-socket = SocketIO()
+socket = SocketIO(logger=False, engineio_logger=False)
 
 
 def create_app():
+
     app = Flask(
         __name__,
         static_url_path='',
-        static_folder='../build',
-        template_folder='../build/',
+        static_folder=os.path.abspath("../textadventure/web/"),
+        template_folder=os.path.abspath("../textadventure/web/"),
     )
     app.config.from_mapping(SECRET_KEY='text-adventure', )
 
@@ -28,6 +30,10 @@ def create_app():
         logging.debug('NEW GAME REQUESTED BY PLAYER')
         AdventureEngine(socketio=socket,
                         scenario_path='./scenarios/lynelle.yaml')
+
+    @socket.on("connect_error")
+    def socket_connect_error():
+        logging.debug("error")
 
     @socket.on(Sockets.LOAD_GAME.value)
     def socket_load_game(game_id: str):

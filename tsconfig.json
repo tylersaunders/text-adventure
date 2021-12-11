@@ -1,20 +1,22 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
-        "forceConsistentCasingInFileNames": true,
-        "incremental": true,
-        "lib": [
-            "ES2016",
-            "ES2017",
-            "ESNext",
-            "dom"
-        ],
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "removeComments": true,
+        "baseUrl": "./",
+        "outDir": "./dist/out-tsc",
         "sourceMap": true,
-        "strict": true,
-        "target": "ES5"
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "module": "es2020",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "incremental": true,
+        "target": "es2015",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "lib": [
+            "es2019",
+            "dom"
+        ]
     }
 }

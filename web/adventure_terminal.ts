@@ -1,4 +1,5 @@
-import * as socketIo from 'socket.io-client';
+import {Socket} from 'socket.io-client';
+
 import {Actions, Directions} from './enums';
 
 /**
@@ -17,10 +18,10 @@ export class AdventureTerminal {
   readonly adventureDisplay: HTMLDivElement;
   readonly actionDisplay: HTMLDivElement;
   readonly input: HTMLInputElement;
-  readonly infoPanel:HTMLDivElement;
-  readonly inventoryList:HTMLElement;
+  readonly infoPanel: HTMLDivElement;
+  readonly inventoryList: HTMLElement;
 
-  constructor(private readonly _socket: SocketIOClient.Socket) {
+  constructor(private readonly _socket: Socket) {
     this.host = document.createElement('div');
     this.host.classList.add('adventure-terminal');
     this.title = document.createElement('p');
@@ -62,23 +63,23 @@ export class AdventureTerminal {
     const actionText = document.createElement('p');
     actionText.textContent = 'actions';
     const actionKeys = document.createElement('ul');
-    for(const key of this.ACTION_KEYS){
+    for (const key of this.ACTION_KEYS) {
       const li = document.createElement('li');
       li.textContent = key;
       actionKeys.appendChild(li);
     }
-    actionDiv.append(actionText,actionKeys);
+    actionDiv.append(actionText, actionKeys);
 
     const directionDiv = document.createElement('div');
     const directionText = document.createElement('p');
     directionText.textContent = 'directions';
     const directionKeys = document.createElement('ul');
-    for(const key of this.DIRECTION_KEYS){
+    for (const key of this.DIRECTION_KEYS) {
       const li = document.createElement('li');
       li.textContent = key;
       directionKeys.appendChild(li);
     }
-    directionDiv.append(directionText,directionKeys);
+    directionDiv.append(directionText, directionKeys);
 
     const inventoryWrapper = document.createElement('div');
     inventoryWrapper.classList.add('inventory-wrapper');
@@ -90,7 +91,7 @@ export class AdventureTerminal {
 
     this.infoPanel.append(actionDiv, directionDiv, inventoryWrapper);
 
-    this.host.append(this.console,this.infoPanel);
+    this.host.append(this.console, this.infoPanel);
     document.body.append(this.host);
 
     this.setupSockets();
@@ -100,48 +101,59 @@ export class AdventureTerminal {
    * Set up socket listeners for backend websocket channels.
    */
   private setupSockets(): void {
-    this._socket.on('adventure-title', (message:string)=>{
-      this.title.textContent = message;
-    })
+    this._socket
+        .on('adventure-title',
+            (message: string) => {
+              this.title.textContent = message;
+            })
 
-    this._socket.on('adventure-text', (message: string) => {
-      this.adventureDisplay.textContent = message;
-    });
+            this._socket.on('adventure-text', (message: string) => {
+              this.adventureDisplay.textContent = message;
+            });
 
     this._socket.on('action-text', (message: string) => {
       this.actionDisplay.textContent = message;
     });
 
-    this._socket.on('game-id', (gameId:string)=>{
-      // When a new game-id is recieved from the server, stash it in a browser cookie.
-      const expires = new Date(9999,1,1);
-      document.cookie = `gameId=${gameId};expires=${expires.toUTCString()}`
-    })
+    this._socket
+        .on('game-id',
+            (gameId: string) => {
+              // When a new game-id is recieved from the server, stash it in a
+              // browser cookie.
+              const expires = new Date(9999, 1, 1);
+              document.cookie =
+                  `gameId=${gameId};expires=${expires.toUTCString()}`
+            })
 
-    this._socket.on('connect', (message:string)=>{
-      // Check and see if we have a current game-id already stored in browser cookies.
-      const cookies = document.cookie.split(';');
-      const gameId = cookies.find(row=>row.startsWith('gameId'))?.split('=')[1];
-      if(gameId){
-        this._socket.emit('load-game', gameId);
-      } else {
-        this._socket.emit('start-game');
-      }});
 
-    this._socket.on('inventory', (message:string) => {
+            this._socket.on('connect', () => {
+              console.log('on-connect');
+
+              // Check and see if we have a current game-id already stored in
+              // browser cookies.
+              const cookies = document.cookie.split(';');
+              const gameId =
+                  cookies.find(row => row.startsWith('gameId'))?.split('=')[1];
+              if (gameId) {
+                this._socket.emit('load-game', gameId);
+              } else {
+                this._socket.emit('start-game');
+              }
+            });
+
+    this._socket.on('inventory', (message: string) => {
       // Assume message is a comma seperated list of item names
       // i.e. key,coffee mug,amulet of truth
       const inventory = message.split(',');
-      while(this.inventoryList.lastChild){
+      while (this.inventoryList.lastChild) {
         this.inventoryList.removeChild(this.inventoryList.lastChild);
       }
-      for (const item of inventory){
+      for (const item of inventory) {
         const li = document.createElement('li');
         li.textContent = item;
         this.inventoryList.appendChild(li);
       }
     });
-
   }
 
   /**
