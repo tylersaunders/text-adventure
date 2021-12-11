@@ -89,6 +89,7 @@ class Scenario():
         ]
         data['player_location'] = self.player_location.serialize(
         ) if self.player_location else ''
+        data['player_inventory'] = [obj.serialize() for obj in self.player_inventory.values()]
         return json.dumps(data)
 
     @classmethod
@@ -107,4 +108,7 @@ class Scenario():
             raise RuntimeError(
                 'Player location could not be found in loaded data!')
         scenario.player_location = scenario.all_locations[player_location.id]
+        for obj in loaded['player_inventory']:
+            loaded_obj = AdventureObject.deserialize(obj)
+            scenario.player_inventory[loaded_obj.id] = loaded_obj
         return scenario
