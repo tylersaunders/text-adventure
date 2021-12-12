@@ -8,7 +8,7 @@ import {Actions, Directions} from './enums';
  */
 export class AdventureTerminal {
   readonly INPUT_PLACEHOLDER = 'what next?';
-  readonly INPUT_KEYS = [13];
+  readonly INPUT_KEYS = ['Enter'];
   readonly ACTION_KEYS = Object.values(Actions);
   readonly DIRECTION_KEYS = Object.values(Directions);
 
@@ -47,8 +47,8 @@ export class AdventureTerminal {
     this.input = document.createElement('input');
     this.input.classList.add('terminal');
     this.input.placeholder = this.INPUT_PLACEHOLDER;
-    this.input.addEventListener('keyup', (e) => {
-      if (this.INPUT_KEYS.includes(e.keyCode)) {
+    this.input.addEventListener('keyup', (event: KeyboardEvent) => {
+      if (this.INPUT_KEYS.includes(event.code)) {
         this.sendAction(this.input.value);
         this.input.value = '';
       }
@@ -101,54 +101,57 @@ export class AdventureTerminal {
    * Set up socket listeners for backend websocket channels.
    */
   private setupSockets(): void {
-    this._socket
-        .on('adventure-title',
-            (message: string) => {
-              this.title.textContent = message;
-            })
+    this._socket.on('adventure-title', this.onAdventureTitle.bind(this));
+    this._socket.on('adventure-text', this.onAdventureText.bind(this));
+    this._socket.on('action-text', this.onActionText.bind(this));
+    this._socket.on('game-id', this.onGameId.bind(this));
+    this._socket.on('connect', this.onConnect.bind(this));
+    this._socket.on('inventory', this.onInventoryMessage.bind(this));
+  }
 
-            this._socket.on('adventure-text', (message: string) => {
-              this.adventureDisplay.textContent = message;
-            });
+  private onConnect(): void {
+    // Check and see if we have a current game-id already stored in
+    // browser cookies.
+    const cookies = document.cookie.split(';');
+    const gameId = cookies.find(row => row.startsWith('gameId'))?.split('=')[1];
+    if (gameId) {
+      this._socket.emit('load-game', gameId);
+    } else {
+      this._socket.emit('start-game');
+    }
+  }
 
-    this._socket.on('action-text', (message: string) => {
-      this.actionDisplay.textContent = message;
-    });
+  private onGameId(gameId: string): void {
+    // When a new game-id is recieved from the server, stash it in a
+    // browser cookie.
+    const expires = new Date(9999, 1, 1);
+    document.cookie = `gameId=${gameId};expires=${expires.toUTCString()}`
+  }
 
-    this._socket.on('game-id', (gameId: string) => {
-      // When a new game-id is recieved from the server, stash it in a
-      // browser cookie.
-      const expires = new Date(9999, 1, 1);
-      document.cookie = `gameId=${gameId};expires=${expires.toUTCString()}`
-    });
+  private onAdventureTitle(title: string): void {
+    this.title.textContent = title;
+  }
 
+  private onActionText(message: string): void {
+    this.actionDisplay.textContent = message;
+  }
 
-    this._socket.on('connect', () => {
-      // Check and see if we have a current game-id already stored in
-      // browser cookies.
-      const cookies = document.cookie.split(';');
-      const gameId =
-          cookies.find(row => row.startsWith('gameId'))?.split('=')[1];
-      if (gameId) {
-        this._socket.emit('load-game', gameId);
-      } else {
-        this._socket.emit('start-game');
-      }
-    });
+  private onAdventureText(message: string): void {
+    this.adventureDisplay.textContent = message;
+  }
 
-    this._socket.on('inventory', (message: string) => {
-      // Assume message is a comma seperated list of item names
-      // i.e. key,coffee mug,amulet of truth
-      const inventory = message.split(',');
-      while (this.inventoryList.lastChild) {
-        this.inventoryList.removeChild(this.inventoryList.lastChild);
-      }
-      for (const item of inventory) {
-        const li = document.createElement('li');
-        li.textContent = item;
-        this.inventoryList.appendChild(li);
-      }
-    });
+  private onInventoryMessage(message: string): void {
+    // Assume message is a comma seperated list of item names
+    // i.e. key,coffee mug,amulet of truth
+    const inventory = message.split(',');
+    while (this.inventoryList.lastChild) {
+      this.inventoryList.removeChild(this.inventoryList.lastChild);
+    }
+    for (const item of inventory) {
+      const li = document.createElement('li');
+      li.textContent = item;
+      this.inventoryList.appendChild(li);
+    }
   }
 
   /**

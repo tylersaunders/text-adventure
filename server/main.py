@@ -19,7 +19,6 @@ def create_app():
     app.config.from_mapping(SECRET_KEY='text-adventure', )
 
     socket.init_app(app)
-    logging.basicConfig(level=logging.DEBUG)
 
     @socket.on(Sockets.CONNECT.value)
     def socket_connected():
