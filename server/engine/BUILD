@@ -11,4 +11,6 @@ py_library(
         "scenario.py",
         "scenario_parser.py",
     ],
+    visibility = ["//:text-adventure"],
+    deps = ["//server:enums"],
 )

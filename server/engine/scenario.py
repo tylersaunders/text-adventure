@@ -66,10 +66,21 @@ class Scenario():
         NOTE: This is the only handler that is called on a MOVE action.
         """
         if direction in self.player_location.exits:
-            self.player_location = self.all_locations[
-                self.player_location.exits[direction]]
+
+            target_loc = self.all_locations[self.player_location.exits[direction]]
+            if target_loc.requires:
+                for item_id in target_loc.requires:
+                    if item_id not in self.player_inventory:
+                        return ActionResult(action_text=target_loc.travel_failure)
+
+            self.player_location = target_loc
+            for item_id in target_loc.requires:
+                self.player_inventory.pop(item_id)
+                target_loc.remove_requirement(item_id)
+            action_text = target_loc.travel_action or f'You travel {direction}.'
             return replace(self.player_location.look(kwargs),
-                           action_text=f'You travel {direction}.')
+                           action_text=action_text, 
+                           push_inventory_update=True)
         else:
             return ActionResult(action_text='You cannot go that way.')
 
@@ -111,4 +122,5 @@ class Scenario():
         for obj in loaded['player_inventory']:
             loaded_obj = AdventureObject.deserialize(obj)
             scenario.player_inventory[loaded_obj.id] = loaded_obj
+        logging.debug(f'{scenario.all_objects}')
         return scenario

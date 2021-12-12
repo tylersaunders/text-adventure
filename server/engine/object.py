@@ -3,6 +3,7 @@ import logging
 from typing import Tuple
 from server.engine.location import Location
 from server.engine.action_result import ActionResult
+from server.enums import ObjectTypes
 
 
 class AdventureObject(object):
@@ -66,6 +67,17 @@ class AdventureObject(object):
             return ActionResult(action_text=(
                 f'This isn\'t a good place to drop the {self.name}.'))
 
+    @classmethod
+    def parse(cls, **kwargs):
+        base_object = kwargs.get("base_object",
+                                 ObjectTypes.ADVENTURE_OBJECT.value)
+        if base_object == ObjectTypes.ACTIVATEABLE.value:
+            obj = Activateable(**kwargs)
+        else:
+            obj = cls(**kwargs)
+
+        return obj
+
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
 
@@ -86,7 +98,6 @@ class Activateable(AdventureObject):
     """
     def __init__(self, id: str, name: str, description: str, on_description,
                  off_description: str, **kwargs):
-        print(kwargs)
         super().__init__(id, name, description, **kwargs)
         self.active = kwargs.get('active', False)
         self.object_type = 'activateable'

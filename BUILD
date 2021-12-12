@@ -20,5 +20,6 @@ py_binary(
         "//web:static",
     ],
     deps = [
+        "//server",
     ],
 )

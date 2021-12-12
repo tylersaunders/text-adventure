@@ -13,9 +13,10 @@ scenario:
         description: >
           You are in a dimly lit cabin, a fierce  wind howls outside and
           rattles the windows. On a small side table near the corner is
-          a lamp. To the north is a wooden door.
+          a lamp. To the north is a wooden door. To the east is another door.
         exits:
           north: mountain_landscape
+          east: closet
         objects:
           - cabin_lamp
           - brass_key
@@ -27,11 +28,25 @@ scenario:
           in the distance to the east and west.
         exits:
           south: cabin
+    - location:
+        id: closet
+        description: >
+          A tiny broom closet.
+        travel_failure: >
+          The handle rattles when you try and turn it. It is locked.
+        travel_action: >
+          The key clicks in the lock as the handle spins.
+        exits:
+          west: cabin
+        requires: 
+          - brass_key
+
+
   items:
     - item:
         id: cabin_lamp
         name: lamp
-        base_object: activatable
+        base_object: activateable
         description: A small bronze table lamp.
         on_description: The lamp throws a soft light throughout the room.
         off_description: The bulb is cold and dusty.

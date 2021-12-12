@@ -96,7 +96,7 @@ class AdventureEngine():
 
         # If the action isn't understood, return the scenario's
         # default unknown action.
-        if action == Actions.UNKNOWN:
+        if action == Actions.UNKNOWN or target is None:
             emit(Sockets.ACTION_TEXT.value,
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return

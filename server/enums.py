@@ -11,3 +11,8 @@ class Sockets(Enum):
     START_GAME = 'start-game'
     LOAD_GAME = 'load-game'
     GAME_ID = 'game-id'
+
+
+class ObjectTypes(Enum):
+    ACTIVATEABLE = 'activateable'
+    ADVENTURE_OBJECT = 'adventure_object'

@@ -9,7 +9,7 @@ export enum Actions {
   TURN_OFF = 'turn off',
 }
 
-export enum Directions{
+export enum Directions {
   N = 'north',
   NE = 'northeast',
   E = 'east',
@@ -19,4 +19,3 @@ export enum Directions{
   W = 'west',
   NW = 'northwest',
 }
-

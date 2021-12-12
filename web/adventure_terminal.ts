@@ -115,31 +115,26 @@ export class AdventureTerminal {
       this.actionDisplay.textContent = message;
     });
 
-    this._socket
-        .on('game-id',
-            (gameId: string) => {
-              // When a new game-id is recieved from the server, stash it in a
-              // browser cookie.
-              const expires = new Date(9999, 1, 1);
-              document.cookie =
-                  `gameId=${gameId};expires=${expires.toUTCString()}`
-            })
+    this._socket.on('game-id', (gameId: string) => {
+      // When a new game-id is recieved from the server, stash it in a
+      // browser cookie.
+      const expires = new Date(9999, 1, 1);
+      document.cookie = `gameId=${gameId};expires=${expires.toUTCString()}`
+    });
 
 
-            this._socket.on('connect', () => {
-              console.log('on-connect');
-
-              // Check and see if we have a current game-id already stored in
-              // browser cookies.
-              const cookies = document.cookie.split(';');
-              const gameId =
-                  cookies.find(row => row.startsWith('gameId'))?.split('=')[1];
-              if (gameId) {
-                this._socket.emit('load-game', gameId);
-              } else {
-                this._socket.emit('start-game');
-              }
-            });
+    this._socket.on('connect', () => {
+      // Check and see if we have a current game-id already stored in
+      // browser cookies.
+      const cookies = document.cookie.split(';');
+      const gameId =
+          cookies.find(row => row.startsWith('gameId'))?.split('=')[1];
+      if (gameId) {
+        this._socket.emit('load-game', gameId);
+      } else {
+        this._socket.emit('start-game');
+      }
+    });
 
     this._socket.on('inventory', (message: string) => {
       // Assume message is a comma seperated list of item names

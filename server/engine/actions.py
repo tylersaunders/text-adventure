@@ -103,16 +103,19 @@ def parse(message: str, scenario: Scenario) -> Tuple[Actions, object, Dict]:
                           action, target)
             return (action, target, {**kwargs})
         if three in prepositions:
-            verb, noun, prep, noun2 = action
+            verb, noun, prep, noun2 = words
             target = _parse_noun(scenario, noun)
-            destination = _parse_noun(scenario, noun)
+            destination = _parse_noun(scenario, noun2)
             action = _parse_action(verb, prep)
             logging.debug('action_parse: target and action found, %s. %s',
-                          action, target)
+                          action, target.id)
             return (action, target, {'destination': destination, **kwargs})
         else:
             logging.debug('action_parse: unable to parse unknown action.')
             return (Actions.UNKNOWN, None, {**kwargs})
+
+    # If it gets this far, then we're not sure what to do.
+    return (Actions.UNKNOWN, None, {**kwargs})
 
 
 def _parse_action(verb: str, preposition: str = None) -> Actions:
