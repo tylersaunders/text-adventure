@@ -22,6 +22,9 @@ class Location(object):
         self.travel_action = kwargs.get('travel_action', None)
         self.travel_failure = kwargs.get('travel_failure', None)
 
+    def __repr__(self):
+        return f'{self.id}'
+
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
 
@@ -40,5 +43,13 @@ class Location(object):
         return location
 
     def look(self, all_objects: object, **kwargs) -> Tuple[str, str]:
-        return ActionResult(adventure_text=self.description,
+        adventure_text = self.description
+
+        # Add description for any objects on the ground.
+        for obj_id in self.objects:
+            obj = all_objects[obj_id]
+            if obj and obj.location_description:
+                adventure_text += " "
+                adventure_text += obj.location_description
+        return ActionResult(adventure_text=adventure_text,
                             action_text='You look around.')

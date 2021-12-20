@@ -2,6 +2,7 @@ import logging
 import yaml
 from server.engine.scenario import Scenario
 from server.engine.location import Location
+from server.engine.ending import Ending
 from server.engine.object import AdventureObject
 
 
@@ -23,13 +24,18 @@ def load_scenario(path: str) -> Scenario:
             loc_dict = loc.get('location')
             location = Location(**loc_dict)
             scenario.add_location(location)
-            logging.debug(location)
+            logging.debug(f'Added location: { location }')
 
         for item in scenario_yaml.get('items', []):
             item_dict = item.get('item')
             obj = AdventureObject.parse(**item_dict)
-            logging.debug(obj)
+            logging.debug(f'Added object: { obj }')
             scenario.add_object(obj)
+
+        for ending in scenario_yaml.get('endings', []):
+            ending_dict = ending.get('ending')
+            ending = Ending.parse(**ending_dict)
+            scenario.add_ending(ending)
 
         stream.close()
         return scenario

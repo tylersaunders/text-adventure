@@ -28,7 +28,7 @@ def create_app():
     def socket_start_game():
         logging.debug('NEW GAME REQUESTED BY PLAYER')
         AdventureEngine(socketio=socket,
-                        scenario_path='./scenarios/lynelle.yaml')
+                        scenario_path='./scenarios/christmas2021.yaml')
 
     @socket.on("connect_error")
     def socket_connect_error():

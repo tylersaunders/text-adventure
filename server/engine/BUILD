@@ -6,6 +6,7 @@ py_library(
         "action_result.py",
         "actions.py",
         "adventure_engine.py",
+        "ending.py",
         "location.py",
         "object.py",
         "scenario.py",

@@ -1,0 +1,221 @@
+# Scenario
+scenario:
+  title: A (north) Boulder Christmas
+  greeting: >
+    The world is hazy and swims before you as you open your eyes. You wake up
+    with a splitting headache and can't seem to remember very much. Something
+    seems to be nagging at the back of your mind, but you aren't quite sure
+    what it is.
+  unknown_action: You aren't so sure about that.
+  starting_location_id: living_room
+  locations:
+    - location:
+        id: living_room
+        description: |
+          Your are in a modest (and perhaps too small) town house, which is in 
+          a rather chaotic state as the inhabitants prepare for Christmas. 
+          The floor is strewn with Amazon delivery boxes and wrapping paper. 
+          On the wall is an advent calendar with an alarming amount of doors 
+          already open.
+
+          The front door is to the west, and the stairs going up to the second 
+          floor is to the east.
+        objects:
+          - christmas_tree
+        exits:
+          west: front_yard
+          east: upstairs
+    - location:
+        id: front_yard
+        description: >
+          You emerge into a snowy mountain landscape. There is about a foot
+          of snow on the ground, and you can see large mountain peaks far
+          in the distance to the west. To the east is a modest town house.
+          To the south is Norwood Avenue. To the west is Broadway street, and
+          the mountains beyond.
+        exits:
+          east: living_room
+          west: broadway
+          south: norwood
+        objects:
+          - dog
+    - location:
+        id: upstairs
+        description: >
+          The second floor features three rooms, a master suite (and you can't
+          help but notice a totally killer bath towel warmer on the bathroom wall
+          ... whoever owns this place truly is living life to the fullest!), a 
+          child's room and a small office. The downstairs is to the west.
+        travel_action: >
+          You head upstairs.
+        objects:
+          - bus_pass
+        exits:
+          west: living_room
+    - location:
+        id: broadway
+        description: >
+          A busy street with cars traveling north and south at a frenzied pace.
+          A south-bound bus has just pulled up to the stop nearest you. A 
+          cross walk leads west into the hills. To the east is the front yard
+          of the townhouse.
+        exits:
+          east: front_yard
+          south: pearl_street
+          west: wonderland_lake
+    - location:
+        id: norwood
+        description: >
+          A tree lined street sloapes east away from the front range. There 
+          aren't many leaves left on the trees, and the few that are left, 
+          seem like one strong gust might blow them all off.
+          To the north is the front yard of the town house, and further to the
+          south is a street sign that reads 'Wilson Ct.'
+        exits:
+          north: front_yard
+          south: wilson_court
+    - location:
+        id: wonderland_lake
+        description: >
+          You cross Broadway and head up towards the mountains. Appearing before
+          you is the Wonderland Lake. "Aptly named", you think to 
+          yourself. There is a running trail that loops the lake, as well as a 
+          playground to the north. Back to the east is Broadway street.
+        exits:
+          north: playground
+          east: broadway
+        objects:
+          - dog_leash
+    - location:
+        id: playground
+        description: >
+          A playground is tucked into the hillside near the lake. It features
+          a fun looking swing set, a sandbox and a couple of slides.
+        exits:
+          south: wonderland_lake
+        objects:
+          - child
+    - location:
+        id: wilson_court
+        description: >
+          On Wilson court is a charming cul-de-sac. Houses line the street, and
+          in the distance you can see the famous flat iron mountains. Behind
+          you to the north is Norwood street.
+        exits:
+          north: norwood
+        objects:
+          - toy_truck
+    - location:
+        id: pearl_street
+        description: >
+          The iconic brick lined Pearl Street. Many shoppers are finishing up
+          their last minute gift shopping, and it seems like the snow may fall
+          at any minute.
+        travel_failure: >
+          The driver of the bus looks at you expecting a ticket. After an
+          embarassing moment, you get off the bus, as the driver sighs audibly.
+        travel_action: >
+          You scan your bus pass, and take a seat for the ride south.
+        exits:
+          north: broadway
+        requires:
+          - bus_pass
+
+  items:
+    - item:
+        id: dog_leash
+        name: leash
+        location_description: >
+          On the ground in front of you, seemingly forgotten, is a dog's leash.
+        description: It's a pretty standard dog leash.
+        takeable: true
+    - item:
+        id: dog
+        name: dog
+        description: >
+          You squint at the dog's tags as the it bounds around. It stays still long
+          enough that you can make out the word "Hubble".
+        location_description: >
+          A small white maltipoo is running around and sniffing the ground. The
+          dog barks when it sees you.
+        takeable: true
+        take_failure: >
+          You lunge for the dog and miss. You are probably going to need something
+          to keep a hold on this wild beast or it will just run off again as soon
+          as you set it down.
+        take_action: >
+          You hold out your hand long enough for the dog to curiously wander up to
+          you. Acting quickly, you slip the leash onto the collar.
+        requires:
+          - dog_leash
+    - item:
+        id: christmas_tree
+        name: tree
+        base_object: activateable
+        location_description: >
+          There's also a handsome Christmas tree, covered in lights.
+        on_description: The tree throws a soft, warm light throughout the room.
+        off_description: The tree appears cold, and unwelcoming.
+        active: false
+    - item:
+        id: folded_note
+        name: note
+        location_description: >
+          There's a folded note, made of fine linen paper, which seems to have
+          fallen on the floor.
+        description: |
+          In scrawled handwriting:
+
+          "My love, I've run out for some quick errands, there should be plenty
+          of time to get things ready. Don't forget to ... 
+
+          [the rest of the letter is smudged and illegible.]
+
+          See you soon, xoxo."
+        takeable: true
+    - item:
+        id: child
+        name: child
+        location_description: >
+          A young child, wearing a construction vest and hat is looking around
+          for something.
+        description: >
+          "I'm Finnien." says the young boy.
+        take_failure: >
+          The young boy sits down and flat out refuses to leave until he finds 
+          whatever he is looking for.
+        take_action: >
+          Thinking quickly before the tears come, you offer the young boy the
+          toy truck, and after a moment of digging he seems willing to come 
+          with you.
+        takeable: true
+        requires:
+          - toy_truck
+    - item:
+        id: toy_truck
+        name: truck
+        location_description: >
+          You notice a small yellow construction truck, an digger, has been left
+          on the ground.
+        description: >
+          It's a well-loved yellow construction truck. This one has dug a lot 
+          of holes in a lot of places. On the bottom written in marker are the
+          initials M.D.
+        takeable: true
+    - item:
+        id: bus_pass
+        name: pass
+        location_description: >
+          There's a RTD bus pass sitting on the ground.
+        description: >
+          It's your bus pass. You'll need this if you are planning to ride the 
+          bus.
+        takeable: true
+  endings:
+    - ending:
+        location_id: pearl_street
+        message: >
+          The ending flavor text would go here.
+        requires:
+          - child
+          - dog

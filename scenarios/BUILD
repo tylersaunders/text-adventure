@@ -1,5 +1,5 @@
 filegroup(
     name = "scenarios",
-    srcs = ["lynelle.yaml"],
+    srcs = glob(["*.yaml"]),
     visibility = ["//:text-adventure"],
 )

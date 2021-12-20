@@ -130,6 +130,7 @@ export class AdventureTerminal {
 
   private onAdventureTitle(title: string): void {
     this.title.textContent = title;
+    document.title = title;
   }
 
   private onActionText(message: string): void {
