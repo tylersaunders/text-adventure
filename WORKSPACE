@@ -6,6 +6,19 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "bazel_skylib",
+    sha256 = "c6966ec828da198c5d9adbaa94c05e3a1c7f21bd012a0b29ba8ddbccb2c93b0d",
+    urls = [
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.1.1/bazel-skylib-1.1.1.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.1.1/bazel-skylib-1.1.1.tar.gz",
+    ],
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
+http_archive(
     name = "rules_python",
     sha256 = "cd6730ed53a002c56ce4e2f396ba3b3be262fd7cb68339f0377a45e8227fe332",
     url = "https://github.com/bazelbuild/rules_python/releases/download/0.5.0/rules_python-0.5.0.tar.gz",
@@ -50,3 +63,44 @@ rules_sass_dependencies()
 load("@io_bazel_rules_sass//:defs.bzl", "sass_repositories")
 
 sass_repositories()
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Docker setup
+http_archive(
+    name = "io_bazel_rules_docker",
+    sha256 = "59536e6ae64359b716ba9c46c39183403b01eabfbd57578e84398b4829ca499a",
+    strip_prefix = "rules_docker-0.22.0",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.22.0/rules_docker-v0.22.0.tar.gz"],
+)
+
+load(
+    "@io_bazel_rules_docker//repositories:repositories.bzl",
+    container_repositories = "repositories",
+)
+
+container_repositories()
+
+load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
+
+container_deps()
+
+load(
+    "@io_bazel_rules_docker//container:container.bzl",
+    "container_pull",
+)
+
+container_pull(
+    name = "java_base",
+    # 'tag' is also supported, but digest is encouraged for reproducibility.
+    digest = "sha256:deadbeef",
+    registry = "gcr.io",
+    repository = "distroless/java",
+)
+
+load(
+    "@io_bazel_rules_docker//python3:image.bzl",
+    _py_image_repos = "repositories",
+)
+
+_py_image_repos()

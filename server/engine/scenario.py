@@ -29,6 +29,7 @@ class Scenario():
         self.all_endings: list[Ending] = []
         self.player_inventory: Dict[str, AdventureObject] = {}
         self.player_location = None
+        self.ended = False
 
     def __repr__(self):
         return f'{self.title}, locs: {self.all_locations} objs: {self.all_objects}, endings: {self.all_endings}'
@@ -102,6 +103,7 @@ class Scenario():
             for ending in self.all_endings:
                 if ending.fulfilled(self.player_inventory,
                                     self.player_location.id):
+                    self.ended = True
                     return ActionResult(adventure_text=ending.message,
                                         action_text="")
 

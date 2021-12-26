@@ -2,6 +2,7 @@ bidict==0.21.4
 click==8.0.3
 eventlet
 Flask
+flask-cors
 Flask-SocketIO
 itsdangerous==2.0.1
 Jinja2==3.0.3

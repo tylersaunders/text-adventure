@@ -12,18 +12,20 @@ scenario:
     - location:
         id: living_room
         description: |
-          Your are in a modest (and perhaps too small) town house, which is in 
+          You are in a modest (and perhaps too small) town house, which is in 
           a rather chaotic state as the inhabitants prepare for Christmas. 
           The floor is strewn with Amazon delivery boxes and wrapping paper. 
           On the wall is an advent calendar with an alarming amount of doors 
           already open.
 
           The front door is to the west, and the stairs going up to the second 
-          floor is to the east.
+          floor is to the east. To the northeast are the basement stairs, going 
+          down.
         objects:
           - christmas_tree
         exits:
           west: front_yard
+          northeast: downstairs
           east: upstairs
     - location:
         id: front_yard
@@ -43,15 +45,28 @@ scenario:
         id: upstairs
         description: >
           The second floor features three rooms, a master suite (and you can't
-          help but notice a totally killer bath towel warmer on the bathroom wall
-          ... whoever owns this place truly is living life to the fullest!), a 
-          child's room and a small office. The downstairs is to the west.
+          help but notice a totally killer bath towel warmer on the bathroom 
+          wall ... whoever owns this place truly is living life to the 
+          fullest!), a child's room and a small office. 
+          The downstairs is to the west.
         travel_action: >
           You head upstairs.
         objects:
           - bus_pass
         exits:
           west: living_room
+    - location:
+        id: downstairs
+        description: >
+          You are in the basement. There's a small playroom as well as an office
+          in the back of the basement. To the southwest are the stairs back
+          to the main floor.
+        travel_action: >
+          You head downstairs.
+        objects:
+          - folded_note
+        exits:
+          southwest: living_room
     - location:
         id: broadway
         description: >
@@ -115,7 +130,7 @@ scenario:
           The driver of the bus looks at you expecting a ticket. After an
           embarassing moment, you get off the bus, as the driver sighs audibly.
         travel_action: >
-          You scan your bus pass, and take a seat for the ride south.
+          You scan your bus pass, and take a seat for the ride.
         exits:
           north: broadway
         requires:
@@ -133,19 +148,19 @@ scenario:
         id: dog
         name: dog
         description: >
-          You squint at the dog's tags as the it bounds around. It stays still long
-          enough that you can make out the word "Hubble".
+          You squint at the dog's tags as the it bounds around. It stays still 
+          long enough that you can make out the word "Hubble".
         location_description: >
           A small white maltipoo is running around and sniffing the ground. The
           dog barks when it sees you.
         takeable: true
         take_failure: >
-          You lunge for the dog and miss. You are probably going to need something
-          to keep a hold on this wild beast or it will just run off again as soon
-          as you set it down.
+          You lunge for the dog and miss. You are probably going to need 
+          something to keep a hold on this wild beast or it will just run off 
+          again as soon as you set it down.
         take_action: >
-          You hold out your hand long enough for the dog to curiously wander up to
-          you. Acting quickly, you slip the leash onto the collar.
+          You hold out your hand long enough for the dog to curiously wander up
+          to you. Acting quickly, you slip the leash onto the collar.
         requires:
           - dog_leash
     - item:
@@ -161,8 +176,8 @@ scenario:
         id: folded_note
         name: note
         location_description: >
-          There's a folded note, made of fine linen paper, which seems to have
-          fallen on the floor.
+          There's a folded note, made of fine linen paper, on the desk in the 
+          office.
         description: |
           In scrawled handwriting:
 
@@ -170,6 +185,8 @@ scenario:
           of time to get things ready. Don't forget to ... 
 
           [the rest of the letter is smudged and illegible.]
+
+          ... and bring them down to Pearl Street.
 
           See you soon, xoxo."
         takeable: true
@@ -180,14 +197,14 @@ scenario:
           A young child, wearing a construction vest and hat is looking around
           for something.
         description: >
-          "I'm Finnien." says the young boy.
+          "I'm not a truck, I'm Finnien." says the young boy.
         take_failure: >
           The young boy sits down and flat out refuses to leave until he finds 
           whatever he is looking for.
         take_action: >
           Thinking quickly before the tears come, you offer the young boy the
           toy truck, and after a moment of digging he seems willing to come 
-          with you.
+          with you. "I'm a bulldozer!" he says.
         takeable: true
         requires:
           - toy_truck
@@ -195,7 +212,7 @@ scenario:
         id: toy_truck
         name: truck
         location_description: >
-          You notice a small yellow construction truck, an digger, has been left
+          You notice a small yellow construction truck, a digger, has been left
           on the ground.
         description: >
           It's a well-loved yellow construction truck. This one has dug a lot 
@@ -215,7 +232,13 @@ scenario:
     - ending:
         location_id: pearl_street
         message: >
-          The ending flavor text would go here.
+          As you arrive on Pearl street to the setting sun,
+          the Christmas lights lining the street turn on as the sun is setting.
+          Your one true love sneaks up behind you with a kiss on the cheek.
+          You spend some time walking down the street gazing into shop windows,
+          surrounded by your family. The world is busy and swirls around you,
+          and now you've have everything that you need.
         requires:
           - child
           - dog
+          - folded_note

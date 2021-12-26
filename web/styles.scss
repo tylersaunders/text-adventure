@@ -42,6 +42,20 @@ body {
     overflow-y: auto;
 }
 
+.ending-message {
+    color: colors.$gray-light;
+    border: 2px solid colors.$mint-accent;
+    padding: 24px 24px;
+}
+
+.the-end {
+    color: colors.$gray-title;
+    font-weight: 500;
+    letter-spacing: .2rem;
+    margin-top: 25px;
+    text-align: center;
+}
+
 .terminal-wrapper {
     display: flex;
     flex-direction: column;

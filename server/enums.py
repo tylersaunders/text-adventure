@@ -11,6 +11,7 @@ class Sockets(Enum):
     START_GAME = 'start-game'
     LOAD_GAME = 'load-game'
     GAME_ID = 'game-id'
+    ENDING = 'ending'
 
 
 class ObjectTypes(Enum):

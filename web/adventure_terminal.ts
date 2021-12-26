@@ -107,6 +107,7 @@ export class AdventureTerminal {
     this._socket.on('game-id', this.onGameId.bind(this));
     this._socket.on('connect', this.onConnect.bind(this));
     this._socket.on('inventory', this.onInventoryMessage.bind(this));
+    this._socket.on('ending', this.onEnding.bind(this));
   }
 
   private onConnect(): void {
@@ -139,6 +140,26 @@ export class AdventureTerminal {
 
   private onAdventureText(message: string): void {
     this.adventureDisplay.textContent = message;
+  }
+
+  private onEnding(message: string): void {
+    // Remove all UI elements.
+    while (this.host.firstChild) {
+      this.host.removeChild(this.host.firstChild);
+    }
+
+    const endingMessage = document.createElement('div');
+    endingMessage.innerText = message;
+    endingMessage.classList.add('ending-message');
+    const theEnd = document.createElement('div');
+    theEnd.textContent = 'The End';
+    theEnd.classList.add('the-end');
+
+    this.host.appendChild(endingMessage);
+    this.host.appendChild(theEnd);
+
+    // Remove the game Id as this one is over.
+    document.cookie = `gameId=${undefined};expires=${new Date()}`;
   }
 
   private onInventoryMessage(message: string): void {

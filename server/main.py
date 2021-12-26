@@ -4,6 +4,7 @@ from flask import Flask, render_template, send_file
 from flask_socketio import SocketIO
 from server.engine.adventure_engine import AdventureEngine
 from server.enums import Sockets
+from flask_cors import CORS
 
 socket = SocketIO(logger=False, engineio_logger=False)
 
@@ -17,6 +18,7 @@ def create_app():
         template_folder=os.path.abspath("../textadventure/web/"),
     )
     app.config.from_mapping(SECRET_KEY='text-adventure', )
+    CORS(app)
 
     socket.init_app(app)
 

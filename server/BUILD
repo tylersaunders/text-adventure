@@ -10,6 +10,7 @@ py_library(
         "//server/engine",
         requirement("flask"),
         requirement("flask_socketio"),
+        requirement("flask-cors"),
     ],
 )
 

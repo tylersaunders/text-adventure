@@ -114,6 +114,9 @@ class AdventureEngine():
                  self.scenario.UNKNOWN_ACTION_RESPONSE)
             return
 
+        if self.scenario.ended:
+            emit(Sockets.ENDING.value, action_result.adventure_text)
+
         if action_result.adventure_text:
             emit(Sockets.ADVENTURE_TEXT.value, action_result.adventure_text)
         if action_result.action_text:
